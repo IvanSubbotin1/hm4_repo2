@@ -1,0 +1,40 @@
+include:
+  - project: '$CI_PROJECT_NAMESPACE/bootstrap'
+    ref: 'master'
+    file: 'bootstrap.gitlab-ci.yml'
+
+services:
+  - docker:dind
+
+stages:
+  - Build
+
+variables:
+  CI_DOCKERFILES_PROJECT: '$CI_PROJECT_NAMESPACE/dockerfiles-example-ci'
+  CI_DOCKERFILES_REF: 'step3'
+  CI_DOCKERFILES_FILE: 'dockerfiles.gitlab-ci.sh'
+
+Build All:
+  stage: Build
+  image: docker
+  extends: .bootstrap
+  variables:
+    CI_IMPORT: dockerfiles
+  when: manual
+  script:
+    - search_all_dockerfiles_task
+    - build_and_push_dockerfiles_task
+
+Build Changed:
+  stage: Build
+  image: docker
+  extends: .bootstrap
+  variables:
+    CI_IMPORT: dockerfiles
+  only:
+    changes:
+      - 'dockerfiles/*.Dockerfile'
+      - 'dockerfiles/**/*.Dockerfile'
+  script:
+    - search_changed_dockerfiles_task
+    - build_and_push_dockerfiles_task
