@@ -1,0 +1,4 @@
+include:
+  - project: '$CI_PROJECT_NAMESPACE/dockerfiles-example-ci'
+    ref: 'step3'
+    file: 'dockerfiles.gitlab-ci.yml'
